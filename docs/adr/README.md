@@ -35,6 +35,8 @@ ADRs explain *why* the system is the way it is, not just *how* it works.
 | [0006](0006-passwordless-otp-abstracted-channel.md) | Passwordless OTP with an abstracted delivery channel | Accepted |
 | [0007](0007-mercado-pago-checkout-pro.md) | Mercado Pago Checkout Pro for the MVP | Accepted |
 | [0008](0008-audit-logging-table-plus-archived-file.md) | Audit logging: queryable table plus archived file | Accepted |
+| [0009](0009-inventory-movements-parent-movement-id.md) | Explicit parent_movement_id on inventory_movements | Accepted |
+| [0010](0010-color-and-size-as-manageable-entities.md) | Color and size as manageable entities, not enums or value objects | Accepted |
 | [0011](0011-admin-authentication-separate-from-customer-otp.md) | Admin authentication separate from customer OTP | Accepted |
 | [0012](0012-variants-generated-from-color-size-selection.md) | Variants generated from a product's color × size selection | Accepted |
 | [0013](0013-categories-two-level-hierarchy-many-to-many.md) | Categories: two-level hierarchy, many-to-many with products | Accepted |
