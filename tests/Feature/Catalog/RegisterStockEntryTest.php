@@ -2,18 +2,23 @@
 
 declare(strict_types=1);
 
-use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
+use Src\Admin\Infrastructure\Eloquent\AdminModel;
 use Src\Catalog\Infrastructure\Eloquent\ColorModel;
 use Src\Catalog\Infrastructure\Eloquent\ProductModel;
 use Src\Catalog\Infrastructure\Eloquent\ProductVariantModel;
 use Src\Catalog\Infrastructure\Eloquent\SizeModel;
+use Src\Shared\Domain\Audit\AuditLogger;
+use Tests\Fakes\FakeAuditLogger;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     Queue::fake();
+    $this->app->instance(AuditLogger::class, new FakeAuditLogger);
+
     $color = ColorModel::create(['name' => 'Azul', 'hex' => '#0000FF']);
     $size = SizeModel::create(['name' => 'P', 'sort_order' => 1]);
     $product = ProductModel::create(['type' => 'single', 'name' => 'Top Teste', 'slug' => 'top-teste']);
@@ -26,11 +31,16 @@ beforeEach(function (): void {
         'price_cents' => 9900,
     ]);
 
-    $this->user = User::factory()->create();
+    $this->admin = AdminModel::create([
+        'name' => 'Test Admin',
+        'email' => 'admin@test.com',
+        'password' => Hash::make('secret'),
+        'active' => true,
+    ]);
 });
 
 it('happy path: responds 201 in the standard envelope and available stock reflects the entry', function (): void {
-    $response = $this->actingAs($this->user)->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => 10,
         'reason' => 'entrada inicial',
@@ -42,7 +52,7 @@ it('happy path: responds 201 in the standard envelope and available stock reflec
 });
 
 it('returns 404 translated by the central handler when variant does not exist', function (): void {
-    $response = $this->actingAs($this->user)->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
         'variant_id' => 999999,
         'quantity' => 5,
     ]);
@@ -53,7 +63,7 @@ it('returns 404 translated by the central handler when variant does not exist', 
 });
 
 it('returns 422 with a PT-BR message when quantity is zero or negative', function (int $quantity): void {
-    $response = $this->actingAs($this->user)->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => $quantity,
     ]);

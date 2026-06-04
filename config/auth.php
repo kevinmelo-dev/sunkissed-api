@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Models\User;
+use Src\Admin\Infrastructure\Eloquent\AdminModel;
 
 return [
 
@@ -44,6 +45,11 @@ return [
             'driver' => 'session',
             'provider' => 'users',
         ],
+
+        'admin' => [
+            'driver' => 'sanctum',
+            'provider' => 'admins',
+        ],
     ],
 
     /*
@@ -69,10 +75,10 @@ return [
             'model' => env('AUTH_MODEL', User::class),
         ],
 
-        // 'users' => [
-        //     'driver' => 'database',
-        //     'table' => 'users',
-        // ],
+        'admins' => [
+            'driver' => 'eloquent',
+            'model' => AdminModel::class,
+        ],
     ],
 
     /*

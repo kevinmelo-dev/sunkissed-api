@@ -1,0 +1,60 @@
+<?php
+
+declare(strict_types=1);
+
+use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Queue;
+use Src\Admin\Infrastructure\Eloquent\AdminModel;
+use Src\Catalog\Infrastructure\Eloquent\ColorModel;
+use Src\Catalog\Infrastructure\Eloquent\ProductModel;
+use Src\Catalog\Infrastructure\Eloquent\ProductVariantModel;
+use Src\Catalog\Infrastructure\Eloquent\SizeModel;
+use Src\Shared\Domain\Audit\AuditLogger;
+use Tests\Fakes\FakeAuditLogger;
+
+uses(RefreshDatabase::class);
+
+beforeEach(function (): void {
+    Queue::fake();
+    $this->app->instance(AuditLogger::class, new FakeAuditLogger);
+
+    $this->admin = AdminModel::create([
+        'name' => 'Test Admin',
+        'email' => 'admin@test.com',
+        'password' => Hash::make('secret'),
+        'active' => true,
+    ]);
+
+    $color = ColorModel::create(['name' => 'Azul', 'hex' => '#0000FF']);
+    $size = SizeModel::create(['name' => 'P', 'sort_order' => 1]);
+    $product = ProductModel::create(['type' => 'single', 'name' => 'Top Teste', 'slug' => 'top-teste']);
+
+    $this->variant = ProductVariantModel::create([
+        'product_id' => $product->id,
+        'color_id' => $color->id,
+        'size_id' => $size->id,
+        'sku' => 'SKU-001',
+        'price_cents' => 9900,
+    ]);
+});
+
+it('returns 401 when requesting stock-entries without a token', function (): void {
+    $this->postJson('/api/v1/catalog/stock-entries', [
+        'variant_id' => $this->variant->id,
+        'quantity' => 5,
+    ])->assertStatus(401);
+});
+
+it('passes the admin guard and processes stock entry when authenticated as admin', function (): void {
+    $response = $this->actingAs($this->admin, 'admin')
+        ->postJson('/api/v1/catalog/stock-entries', [
+            'variant_id' => $this->variant->id,
+            'quantity' => 10,
+            'reason' => 'entrada teste',
+        ]);
+
+    $response->assertStatus(201)
+        ->assertJsonStructure(['data' => ['movement_id', 'available_after']])
+        ->assertJsonPath('data.available_after', 10);
+});
