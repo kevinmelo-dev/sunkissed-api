@@ -40,3 +40,4 @@ ADRs explain *why* the system is the way it is, not just *how* it works.
 | [0011](0011-admin-authentication-separate-from-customer-otp.md) | Admin authentication separate from customer OTP | Accepted |
 | [0012](0012-variants-generated-from-color-size-selection.md) | Variants generated from a product's color × size selection | Accepted |
 | [0013](0013-categories-two-level-hierarchy-many-to-many.md) | Categories: two-level hierarchy, many-to-many with products | Accepted |
+| [0014](0014-product-images-belong-to-product-color-pair.md) | Product images belong to the (product, color) pair, not to the variant | Accepted |
