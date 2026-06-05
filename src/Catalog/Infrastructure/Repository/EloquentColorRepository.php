@@ -17,12 +17,28 @@ final class EloquentColorRepository implements ColorRepository
         return $model ? $this->toEntity($model) : null;
     }
 
-    public function all(): array
+    public function all(bool $onlyActive = false): array
     {
-        return ColorModel::where('active', true)
-            ->get()
+        $query = ColorModel::query();
+
+        if ($onlyActive) {
+            $query->where('active', true);
+        }
+
+        return $query->get()
             ->map(fn (ColorModel $m) => $this->toEntity($m))
             ->all();
+    }
+
+    public function existsByName(string $name, ?int $excludeId = null): bool
+    {
+        $query = ColorModel::where('name', $name);
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return $query->exists();
     }
 
     public function save(Color $color): Color

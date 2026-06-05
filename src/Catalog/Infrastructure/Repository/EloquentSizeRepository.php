@@ -17,13 +17,28 @@ final class EloquentSizeRepository implements SizeRepository
         return $model ? $this->toEntity($model) : null;
     }
 
-    public function all(): array
+    public function all(bool $onlyActive = false): array
     {
-        return SizeModel::where('active', true)
-            ->orderBy('sort_order')
-            ->get()
+        $query = SizeModel::orderBy('sort_order');
+
+        if ($onlyActive) {
+            $query->where('active', true);
+        }
+
+        return $query->get()
             ->map(fn (SizeModel $m) => $this->toEntity($m))
             ->all();
+    }
+
+    public function existsByName(string $name, ?int $excludeId = null): bool
+    {
+        $query = SizeModel::where('name', $name);
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return $query->exists();
     }
 
     public function save(Size $size): Size

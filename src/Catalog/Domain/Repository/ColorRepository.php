@@ -11,7 +11,9 @@ interface ColorRepository
     public function find(int $id): ?Color;
 
     /** @return Color[] */
-    public function all(): array;
+    public function all(bool $onlyActive = false): array;
+
+    public function existsByName(string $name, ?int $excludeId = null): bool;
 
     public function save(Color $color): Color;
 }
