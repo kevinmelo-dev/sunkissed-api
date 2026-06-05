@@ -26,12 +26,30 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
         return $model ? $this->toEntity($model) : null;
     }
 
+    public function findCombination(int $productId, int $colorId, int $sizeId): ?ProductVariant
+    {
+        $model = ProductVariantModel::where('product_id', $productId)
+            ->where('color_id', $colorId)
+            ->where('size_id', $sizeId)
+            ->first();
+
+        return $model ? $this->toEntity($model) : null;
+    }
+
     public function existsCombination(int $productId, int $colorId, int $sizeId): bool
     {
         return ProductVariantModel::where('product_id', $productId)
             ->where('color_id', $colorId)
             ->where('size_id', $sizeId)
             ->exists();
+    }
+
+    public function findForProduct(int $productId): array
+    {
+        return ProductVariantModel::where('product_id', $productId)
+            ->get()
+            ->map(fn (ProductVariantModel $m) => $this->toEntity($m))
+            ->all();
     }
 
     public function save(ProductVariant $variant): ProductVariant
@@ -48,6 +66,7 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
             'size_id' => $variant->sizeId(),
             'sku' => $variant->sku()->value,
             'price_cents' => $variant->price()->cents,
+            'image' => $variant->image(),
             'active' => $variant->active(),
         ])->save();
 
@@ -64,6 +83,7 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
             sku: new Sku($model->sku),
             price: Money::fromCents($model->price_cents),
             active: $model->active,
+            image: $model->image,
         );
     }
 }

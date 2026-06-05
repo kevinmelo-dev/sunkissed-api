@@ -25,6 +25,30 @@ final class EloquentProductRepository implements ProductRepository
         return $model ? $this->toEntity($model) : null;
     }
 
+    public function all(bool $onlyActive = false): array
+    {
+        $query = ProductModel::query();
+
+        if ($onlyActive) {
+            $query->where('active', true);
+        }
+
+        return $query->get()
+            ->map(fn (ProductModel $m) => $this->toEntity($m))
+            ->all();
+    }
+
+    public function existsBySlug(string $slug, ?int $excludeId = null): bool
+    {
+        $query = ProductModel::where('slug', $slug);
+
+        if ($excludeId !== null) {
+            $query->where('id', '!=', $excludeId);
+        }
+
+        return $query->exists();
+    }
+
     public function save(Product $product): Product
     {
         if ($product->id() !== null) {

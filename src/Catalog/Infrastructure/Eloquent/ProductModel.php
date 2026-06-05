@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace Src\Catalog\Infrastructure\Eloquent;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 /**
@@ -24,4 +25,9 @@ final class ProductModel extends Model
     protected $fillable = ['type', 'name', 'slug', 'description', 'active'];
 
     protected $casts = ['active' => 'boolean'];
+
+    public function categories(): BelongsToMany
+    {
+        return $this->belongsToMany(CategoryModel::class, 'category_product', 'product_id', 'category_id');
+    }
 }

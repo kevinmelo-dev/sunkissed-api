@@ -12,5 +12,10 @@ interface ProductRepository
 
     public function findBySlug(string $slug): ?Product;
 
+    /** @return Product[] */
+    public function all(bool $onlyActive = false): array;
+
+    public function existsBySlug(string $slug, ?int $excludeId = null): bool;
+
     public function save(Product $product): Product;
 }

@@ -13,7 +13,12 @@ interface ProductVariantRepository
 
     public function findBySku(Sku $sku): ?ProductVariant;
 
+    public function findCombination(int $productId, int $colorId, int $sizeId): ?ProductVariant;
+
     public function existsCombination(int $productId, int $colorId, int $sizeId): bool;
+
+    /** @return ProductVariant[] All variants (active and inactive) for a product */
+    public function findForProduct(int $productId): array;
 
     public function save(ProductVariant $variant): ProductVariant;
 }

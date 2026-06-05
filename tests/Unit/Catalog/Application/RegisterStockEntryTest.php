@@ -35,9 +35,19 @@ function fakeVariantRepo(?ProductVariant $variant = null): ProductVariantReposit
             return null;
         }
 
+        public function findCombination(int $productId, int $colorId, int $sizeId): ?ProductVariant
+        {
+            return null;
+        }
+
         public function existsCombination(int $productId, int $colorId, int $sizeId): bool
         {
             return false;
+        }
+
+        public function findForProduct(int $productId): array
+        {
+            return [];
         }
 
         public function save(ProductVariant $variant): ProductVariant
