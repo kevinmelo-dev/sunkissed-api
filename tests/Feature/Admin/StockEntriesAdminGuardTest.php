@@ -40,7 +40,7 @@ beforeEach(function (): void {
 });
 
 it('returns 401 when requesting stock-entries without a token', function (): void {
-    $this->postJson('/api/v1/catalog/stock-entries', [
+    $this->postJson('/api/v1/admin/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => 5,
     ])->assertStatus(401);
@@ -48,7 +48,7 @@ it('returns 401 when requesting stock-entries without a token', function (): voi
 
 it('passes the admin guard and processes stock entry when authenticated as admin', function (): void {
     $response = $this->actingAs($this->admin, 'admin')
-        ->postJson('/api/v1/catalog/stock-entries', [
+        ->postJson('/api/v1/admin/catalog/stock-entries', [
             'variant_id' => $this->variant->id,
             'quantity' => 10,
             'reason' => 'entrada teste',

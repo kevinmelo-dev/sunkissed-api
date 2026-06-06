@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Src\Catalog\Application\GetProduct\GetProduct;
 use Src\Catalog\Application\GetProduct\GetProductQuery;
+use Src\Catalog\Application\ProductCoverImage\ProductCoverImageResolver;
 use Src\Catalog\Domain\Entity\Category;
 use Src\Catalog\Domain\Entity\ProductVariant;
 use Src\Shared\Infrastructure\Http\ApiResponse;
@@ -16,6 +17,7 @@ final class GetProductController
 {
     public function __construct(
         private readonly GetProduct $useCase,
+        private readonly ProductCoverImageResolver $coverResolver,
     ) {}
 
     public function __invoke(Request $request, int $id): JsonResponse
@@ -31,6 +33,8 @@ final class GetProductController
             'slug' => $p->slug(),
             'description' => $p->description(),
             'active' => $p->active(),
+            'cover_color_id' => $p->coverColorId(),
+            'cover_image_url' => $this->coverResolver->resolve($p),
             'categories' => array_map(
                 fn (Category $c) => [
                     'id' => $c->id(),
@@ -46,7 +50,6 @@ final class GetProductController
                     'color_id' => $v->colorId(),
                     'size_id' => $v->sizeId(),
                     'price_cents' => $v->price()->cents,
-                    'image' => $v->image(),
                     'active' => $v->active(),
                 ],
                 $detail->variants,

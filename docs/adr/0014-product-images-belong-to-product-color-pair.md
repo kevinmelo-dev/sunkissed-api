@@ -63,3 +63,7 @@ derived at display time and is never stored.
 - Deriving the cover image requires a query (active color with lowest sort order → first
   image); it is not a free column read.
 - If photos ever need to vary by size (not the case today), this ADR must be revisited.
+
+---
+
+**Amendment (2026-06-05):** The cover derivation rule described above ("first image of the active color with the lowest sort_order") has been refined. Cover is now defined by a per-product `cover_color_id` column (nullable FK → colors) set explicitly by the admin via `SetProductCoverColor`. Fallback when `cover_color_id` is null or has no images: the first active color (lowest id) that has at least one image. The `colors` table does not receive a `sort_order` column.

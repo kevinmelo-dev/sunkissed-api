@@ -52,6 +52,23 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
             ->all();
     }
 
+    public function findActiveForProductColor(int $productId, int $colorId): array
+    {
+        return ProductVariantModel::where('product_id', $productId)
+            ->where('color_id', $colorId)
+            ->where('active', true)
+            ->get()
+            ->map(fn (ProductVariantModel $m) => $this->toEntity($m))
+            ->all();
+    }
+
+    public function existsColorForProduct(int $productId, int $colorId): bool
+    {
+        return ProductVariantModel::where('product_id', $productId)
+            ->where('color_id', $colorId)
+            ->exists();
+    }
+
     public function save(ProductVariant $variant): ProductVariant
     {
         if ($variant->id() !== null) {
@@ -66,7 +83,6 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
             'size_id' => $variant->sizeId(),
             'sku' => $variant->sku()->value,
             'price_cents' => $variant->price()->cents,
-            'image' => $variant->image(),
             'active' => $variant->active(),
         ])->save();
 
@@ -83,7 +99,6 @@ final class EloquentProductVariantRepository implements ProductVariantRepository
             sku: new Sku($model->sku),
             price: Money::fromCents($model->price_cents),
             active: $model->active,
-            image: $model->image,
         );
     }
 }

@@ -17,7 +17,6 @@ final class ProductVariant
         private readonly Sku $sku,
         private Money $price,
         private bool $active,
-        private ?string $image = null,
     ) {}
 
     public function id(): ?int
@@ -53,10 +52,5 @@ final class ProductVariant
     public function active(): bool
     {
         return $this->active;
-    }
-
-    public function image(): ?string
-    {
-        return $this->image;
     }
 }

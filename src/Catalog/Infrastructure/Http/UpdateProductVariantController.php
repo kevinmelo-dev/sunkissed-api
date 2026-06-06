@@ -20,7 +20,6 @@ final class UpdateProductVariantController
         $variant = $this->useCase->execute(new UpdateProductVariantCommand(
             id: $id,
             priceCents: $request->has('price_cents') ? (int) $request->input('price_cents') : null,
-            image: $request->has('image') ? $request->input('image') : null,
             sku: $request->has('sku') ? $request->string('sku')->toString() : null,
             actorId: $request->user()->id,
         ));
@@ -31,7 +30,6 @@ final class UpdateProductVariantController
             'color_id' => $variant->colorId(),
             'size_id' => $variant->sizeId(),
             'price_cents' => $variant->price()->cents,
-            'image' => $variant->image(),
             'active' => $variant->active(),
         ]);
     }

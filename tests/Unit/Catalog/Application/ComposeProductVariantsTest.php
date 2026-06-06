@@ -125,6 +125,16 @@ function fakeVariantRepoForCompose(array $variants = []): ProductVariantReposito
             ));
         }
 
+        public function findActiveForProductColor(int $productId, int $colorId): array
+        {
+            return [];
+        }
+
+        public function existsColorForProduct(int $productId, int $colorId): bool
+        {
+            return false;
+        }
+
         public function save(ProductVariant $variant): ProductVariant
         {
             if ($variant->id() !== null) {
@@ -134,7 +144,7 @@ function fakeVariantRepoForCompose(array $variants = []): ProductVariantReposito
             }
 
             $id = $this->nextId++;
-            $saved = new ProductVariant($id, $variant->productId(), $variant->colorId(), $variant->sizeId(), $variant->sku(), $variant->price(), $variant->active(), $variant->image());
+            $saved = new ProductVariant(id: $id, productId: $variant->productId(), colorId: $variant->colorId(), sizeId: $variant->sizeId(), sku: $variant->sku(), price: $variant->price(), active: $variant->active());
             $this->store[$id] = $saved;
 
             return $saved;

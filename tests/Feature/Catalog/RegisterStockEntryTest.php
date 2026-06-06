@@ -40,7 +40,7 @@ beforeEach(function (): void {
 });
 
 it('happy path: responds 201 in the standard envelope and available stock reflects the entry', function (): void {
-    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/admin/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => 10,
         'reason' => 'entrada inicial',
@@ -52,7 +52,7 @@ it('happy path: responds 201 in the standard envelope and available stock reflec
 });
 
 it('returns 404 translated by the central handler when variant does not exist', function (): void {
-    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/admin/catalog/stock-entries', [
         'variant_id' => 999999,
         'quantity' => 5,
     ]);
@@ -63,7 +63,7 @@ it('returns 404 translated by the central handler when variant does not exist', 
 });
 
 it('returns 422 with a PT-BR message when quantity is zero or negative', function (int $quantity): void {
-    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/catalog/stock-entries', [
+    $response = $this->actingAs($this->admin, 'admin')->postJson('/api/v1/admin/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => $quantity,
     ]);
@@ -74,7 +74,7 @@ it('returns 422 with a PT-BR message when quantity is zero or negative', functio
 })->with([0, -1, -10]);
 
 it('returns 401 when unauthenticated', function (): void {
-    $this->postJson('/api/v1/catalog/stock-entries', [
+    $this->postJson('/api/v1/admin/catalog/stock-entries', [
         'variant_id' => $this->variant->id,
         'quantity' => 5,
     ])->assertStatus(401);

@@ -20,5 +20,10 @@ interface ProductVariantRepository
     /** @return ProductVariant[] All variants (active and inactive) for a product */
     public function findForProduct(int $productId): array;
 
+    /** @return ProductVariant[] Active variants for a product+color combination */
+    public function findActiveForProductColor(int $productId, int $colorId): array;
+
+    public function existsColorForProduct(int $productId, int $colorId): bool;
+
     public function save(ProductVariant $variant): ProductVariant;
 }

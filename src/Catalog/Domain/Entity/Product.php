@@ -18,6 +18,7 @@ final class Product
         private string $slug,
         private ?string $description,
         private bool $active,
+        private readonly ?int $coverColorId = null,
     ) {}
 
     public function id(): ?int
@@ -48,6 +49,11 @@ final class Product
     public function active(): bool
     {
         return $this->active;
+    }
+
+    public function coverColorId(): ?int
+    {
+        return $this->coverColorId;
     }
 
     /** @return ProductVariant[] */

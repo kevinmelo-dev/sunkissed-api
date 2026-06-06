@@ -63,6 +63,16 @@ function fakeVariantRepoForUpdate(array $variants = []): ProductVariantRepositor
             return [];
         }
 
+        public function findActiveForProductColor(int $productId, int $colorId): array
+        {
+            return [];
+        }
+
+        public function existsColorForProduct(int $productId, int $colorId): bool
+        {
+            return false;
+        }
+
         public function save(ProductVariant $variant): ProductVariant
         {
             $this->store[$variant->id()] = $variant;
@@ -87,7 +97,7 @@ function fakeAuditForVariant(): AuditLogger
 
 function makeVariantForUpdate(int $id, string $sku = 'P1C1S1', int $priceCents = 0): ProductVariant
 {
-    return new ProductVariant($id, 1, 1, 1, new Sku($sku), Money::fromCents($priceCents), true);
+    return new ProductVariant(id: $id, productId: 1, colorId: 1, sizeId: 1, sku: new Sku($sku), price: Money::fromCents($priceCents), active: true);
 }
 
 it('updates price in cents', function (): void {
@@ -95,7 +105,7 @@ it('updates price in cents', function (): void {
     $repo = fakeVariantRepoForUpdate([$variant]);
 
     $result = (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 1, priceCents: 9900, image: null, sku: null, actorId: 1),
+        new UpdateProductVariantCommand(id: 1, priceCents: 9900, sku: null, actorId: 1),
     );
 
     expect($result->price()->cents)->toBe(9900);
@@ -106,21 +116,10 @@ it('updates sku to a new unique value', function (): void {
     $repo = fakeVariantRepoForUpdate([$variant]);
 
     $result = (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 1, priceCents: null, image: null, sku: 'CUSTOM-SKU', actorId: 1),
+        new UpdateProductVariantCommand(id: 1, priceCents: null, sku: 'CUSTOM-SKU', actorId: 1),
     );
 
     expect($result->sku()->value)->toBe('CUSTOM-SKU');
-});
-
-it('updates image', function (): void {
-    $variant = makeVariantForUpdate(1);
-    $repo = fakeVariantRepoForUpdate([$variant]);
-
-    $result = (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 1, priceCents: null, image: 'images/biquini.jpg', sku: null, actorId: 1),
-    );
-
-    expect($result->image())->toBe('images/biquini.jpg');
 });
 
 it('throws DuplicateSkuException when new sku conflicts with existing variant', function (): void {
@@ -129,7 +128,7 @@ it('throws DuplicateSkuException when new sku conflicts with existing variant', 
     $repo = fakeVariantRepoForUpdate([$v1, $v2]);
 
     (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 1, priceCents: null, image: null, sku: 'P1C2S1', actorId: 1),
+        new UpdateProductVariantCommand(id: 1, priceCents: null, sku: 'P1C2S1', actorId: 1),
     );
 })->throws(DuplicateSkuException::class);
 
@@ -138,7 +137,7 @@ it('allows setting sku to the same value (no conflict)', function (): void {
     $repo = fakeVariantRepoForUpdate([$variant]);
 
     $result = (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 1, priceCents: null, image: null, sku: 'P1C1S1', actorId: 1),
+        new UpdateProductVariantCommand(id: 1, priceCents: null, sku: 'P1C1S1', actorId: 1),
     );
 
     expect($result->sku()->value)->toBe('P1C1S1');
@@ -148,6 +147,6 @@ it('throws ProductVariantNotFoundException for unknown variant', function (): vo
     $repo = fakeVariantRepoForUpdate();
 
     (new UpdateProductVariant($repo, fakeAuditForVariant()))->execute(
-        new UpdateProductVariantCommand(id: 99, priceCents: null, image: null, sku: null, actorId: 1),
+        new UpdateProductVariantCommand(id: 99, priceCents: null, sku: null, actorId: 1),
     );
 })->throws(ProductVariantNotFoundException::class);

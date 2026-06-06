@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
  * @property string $slug
  * @property string|null $description
  * @property bool $active
+ * @property int|null $cover_color_id
  */
 final class ProductModel extends Model
 {
@@ -22,7 +23,7 @@ final class ProductModel extends Model
 
     protected $table = 'products';
 
-    protected $fillable = ['type', 'name', 'slug', 'description', 'active'];
+    protected $fillable = ['type', 'name', 'slug', 'description', 'active', 'cover_color_id'];
 
     protected $casts = ['active' => 'boolean'];
 

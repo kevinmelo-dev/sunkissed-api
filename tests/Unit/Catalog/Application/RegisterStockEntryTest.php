@@ -50,6 +50,16 @@ function fakeVariantRepo(?ProductVariant $variant = null): ProductVariantReposit
             return [];
         }
 
+        public function findActiveForProductColor(int $productId, int $colorId): array
+        {
+            return [];
+        }
+
+        public function existsColorForProduct(int $productId, int $colorId): bool
+        {
+            return false;
+        }
+
         public function save(ProductVariant $variant): ProductVariant
         {
             return $variant;

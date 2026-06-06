@@ -63,6 +63,7 @@ final class EloquentProductRepository implements ProductRepository
             'slug' => $product->slug(),
             'description' => $product->description(),
             'active' => $product->active(),
+            'cover_color_id' => $product->coverColorId(),
         ])->save();
 
         return $this->toEntity($model);
@@ -77,6 +78,7 @@ final class EloquentProductRepository implements ProductRepository
             slug: $model->slug,
             description: $model->description,
             active: $model->active,
+            coverColorId: $model->cover_color_id,
         );
     }
 }

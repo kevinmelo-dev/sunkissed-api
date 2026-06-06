@@ -290,7 +290,7 @@ it('returns 422 when composing with inactive color', function (): void {
 
 // ─── Update Variant ──────────────────────────────────────────────────────────
 
-it('updates variant price and image', function (): void {
+it('updates variant price', function (): void {
     $product = ProductModel::create(['type' => 'kit', 'name' => 'Biquíni', 'slug' => 'biquini', 'active' => true]);
     $color = ColorModel::create(['name' => 'Rosa', 'active' => true]);
     $size = SizeModel::create(['name' => 'P', 'sort_order' => 1, 'active' => true]);
@@ -306,12 +306,10 @@ it('updates variant price and image', function (): void {
     $response = $this->actingAs($this->admin, 'admin')
         ->patchJson("/api/v1/admin/catalog/variants/{$variant->id}", [
             'price_cents' => 19900,
-            'image' => 'images/biquini-rosa.jpg',
         ]);
 
     $response->assertStatus(200)
-        ->assertJsonPath('data.price_cents', 19900)
-        ->assertJsonPath('data.image', 'images/biquini-rosa.jpg');
+        ->assertJsonPath('data.price_cents', 19900);
 });
 
 it('returns 422 with PT-BR message when sku is duplicate', function (): void {

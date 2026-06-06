@@ -8,6 +8,7 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Src\Catalog\Application\ListProducts\ListProducts;
 use Src\Catalog\Application\ListProducts\ListProductsQuery;
+use Src\Catalog\Application\ProductCoverImage\ProductCoverImageResolver;
 use Src\Catalog\Domain\Entity\Product;
 use Src\Shared\Infrastructure\Http\ApiResponse;
 
@@ -15,6 +16,7 @@ final class ListProductsController
 {
     public function __construct(
         private readonly ListProducts $useCase,
+        private readonly ProductCoverImageResolver $coverResolver,
     ) {}
 
     public function __invoke(Request $request): JsonResponse
@@ -31,6 +33,7 @@ final class ListProductsController
                 'slug' => $p->slug(),
                 'description' => $p->description(),
                 'active' => $p->active(),
+                'cover_image_url' => $this->coverResolver->resolve($p),
             ],
             $products,
         ));

@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace Src\Catalog\Infrastructure\Providers;
 
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\ServiceProvider;
+use Src\Catalog\Application\ImageStorage\ImageStorage;
 use Src\Catalog\Domain\Repository\CategoryRepository;
 use Src\Catalog\Domain\Repository\ColorRepository;
 use Src\Catalog\Domain\Repository\InventoryMovementRepository;
 use Src\Catalog\Domain\Repository\ProductCategoryRepository;
+use Src\Catalog\Domain\Repository\ProductColorImageRepository;
 use Src\Catalog\Domain\Repository\ProductRepository;
 use Src\Catalog\Domain\Repository\ProductVariantRepository;
 use Src\Catalog\Domain\Repository\SizeRepository;
@@ -16,9 +19,11 @@ use Src\Catalog\Infrastructure\Repository\EloquentCategoryRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentColorRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentInventoryMovementRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentProductCategoryRepository;
+use Src\Catalog\Infrastructure\Repository\EloquentProductColorImageRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentProductRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentProductVariantRepository;
 use Src\Catalog\Infrastructure\Repository\EloquentSizeRepository;
+use Src\Catalog\Infrastructure\Storage\S3ImageStorage;
 
 final class CatalogServiceProvider extends ServiceProvider
 {
@@ -31,5 +36,10 @@ final class CatalogServiceProvider extends ServiceProvider
         $this->app->bind(SizeRepository::class, EloquentSizeRepository::class);
         $this->app->bind(InventoryMovementRepository::class, EloquentInventoryMovementRepository::class);
         $this->app->bind(CategoryRepository::class, EloquentCategoryRepository::class);
+        $this->app->bind(ProductColorImageRepository::class, EloquentProductColorImageRepository::class);
+
+        $this->app->singleton(ImageStorage::class, fn () => new S3ImageStorage(
+            Storage::disk('s3'),
+        ));
     }
 }

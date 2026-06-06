@@ -49,8 +49,6 @@ final class UpdateProductVariant
             ? Money::fromCents($command->priceCents)
             : $existing->price();
 
-        $newImage = $command->image !== null ? $command->image : $existing->image();
-
         $updated = new ProductVariant(
             id: $existing->id(),
             productId: $existing->productId(),
@@ -59,7 +57,6 @@ final class UpdateProductVariant
             sku: $newSku,
             price: $newPrice,
             active: $existing->active(),
-            image: $newImage,
         );
 
         $saved = $this->variants->save($updated);
@@ -71,7 +68,6 @@ final class UpdateProductVariant
             context: [
                 'sku' => $saved->sku()->value,
                 'price_cents' => $saved->price()->cents,
-                'image' => $saved->image(),
             ],
         ));
 

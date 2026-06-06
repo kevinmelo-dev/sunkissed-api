@@ -86,7 +86,6 @@ final class ComposeProductVariants
                 sku: $variant->sku(),
                 price: $variant->price(),
                 active: false,
-                image: $variant->image(),
             ));
         }
 
@@ -99,7 +98,6 @@ final class ComposeProductVariants
                 sku: $variant->sku(),
                 price: $variant->price(),
                 active: true,
-                image: $variant->image(),
             ));
         }
 
