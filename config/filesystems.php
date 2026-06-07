@@ -62,6 +62,33 @@ return [
             'report' => false,
         ],
 
+        'images' => [
+            'driver' => 's3',
+            'key' => env('R2_KEY'),
+            'secret' => env('R2_SECRET'),
+            'region' => 'auto',
+            'bucket' => env('R2_IMAGES_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'url' => env('R2_IMAGES_URL'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'public',
+            'throw' => false,
+            'report' => false,
+        ],
+
+        'audit' => [
+            'driver' => 's3',
+            'key' => env('R2_KEY'),
+            'secret' => env('R2_SECRET'),
+            'region' => 'auto',
+            'bucket' => env('R2_AUDIT_BUCKET'),
+            'endpoint' => env('R2_ENDPOINT'),
+            'use_path_style_endpoint' => true,
+            'visibility' => 'private',
+            'throw' => false,
+            'report' => false,
+        ],
+
     ],
 
     /*

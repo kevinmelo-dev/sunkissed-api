@@ -41,3 +41,4 @@ ADRs explain *why* the system is the way it is, not just *how* it works.
 | [0012](0012-variants-generated-from-color-size-selection.md) | Variants generated from a product's color × size selection | Accepted |
 | [0013](0013-categories-two-level-hierarchy-many-to-many.md) | Categories: two-level hierarchy, many-to-many with products | Accepted |
 | [0014](0014-product-images-belong-to-product-color-pair.md) | Product images belong to the (product, color) pair, not to the variant | Accepted |
+| [0015](0015-storefront-listing-one-entry-per-product-color-with-combined-slug.md) | Storefront lists one entry per (product, color) with a combined slug | Accepted |

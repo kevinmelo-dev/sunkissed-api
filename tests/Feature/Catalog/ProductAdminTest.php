@@ -5,6 +5,7 @@ declare(strict_types=1);
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Queue;
+use Illuminate\Support\Facades\Storage;
 use Src\Admin\Infrastructure\Eloquent\AdminModel;
 use Src\Catalog\Infrastructure\Eloquent\CategoryModel;
 use Src\Catalog\Infrastructure\Eloquent\ColorModel;
@@ -18,6 +19,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     Queue::fake();
+    Storage::fake('images');
     $this->app->instance(AuditLogger::class, new FakeAuditLogger);
 
     $this->admin = AdminModel::create([

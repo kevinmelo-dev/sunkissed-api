@@ -39,7 +39,7 @@ final class CatalogServiceProvider extends ServiceProvider
         $this->app->bind(ProductColorImageRepository::class, EloquentProductColorImageRepository::class);
 
         $this->app->singleton(ImageStorage::class, fn () => new S3ImageStorage(
-            Storage::disk('s3'),
+            Storage::disk('images'),
         ));
     }
 }

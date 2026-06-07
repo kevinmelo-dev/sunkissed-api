@@ -17,7 +17,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     Queue::fake();
-    Storage::fake('s3');
+    Storage::fake('images');
     $this->app->instance(AuditLogger::class, new FakeAuditLogger);
 });
 
@@ -49,7 +49,7 @@ it('includes cover_image_url in storefront list', function (): void {
     $product = ProductModel::create(['type' => 'kit', 'name' => 'Biquíni', 'slug' => 'biquini', 'active' => true]);
     $color = ColorModel::create(['name' => 'Rosa', 'active' => true]);
 
-    Storage::disk('s3')->put('products/1/colors/1/img.jpg', 'fake');
+    Storage::disk('images')->put('products/1/colors/1/img.jpg', 'fake');
     ProductColorImageModel::create([
         'product_id' => $product->id, 'color_id' => $color->id,
         'storage_key' => 'products/1/colors/1/img.jpg', 'position' => 1,

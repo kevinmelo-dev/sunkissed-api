@@ -8,7 +8,7 @@ return [
     | works (AWS S3 or Cloudflare R2) since both use Laravel's "s3" driver. Defaults to
     | the app's primary filesystem disk.
     */
-    'archive_disk' => env('AUDIT_ARCHIVE_DISK', env('FILESYSTEM_DISK', 's3')),
+    'archive_disk' => env('AUDIT_ARCHIVE_DISK', 'audit'),
 
     /*
     | Base path (prefix) under which audit log files are written on the archive disk.

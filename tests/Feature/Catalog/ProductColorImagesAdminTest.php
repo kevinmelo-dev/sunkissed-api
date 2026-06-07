@@ -20,7 +20,7 @@ uses(RefreshDatabase::class);
 
 beforeEach(function (): void {
     Queue::fake();
-    Storage::fake('s3');
+    Storage::fake('images');
     $this->app->instance(AuditLogger::class, new FakeAuditLogger);
 
     $this->admin = AdminModel::create([
@@ -163,7 +163,7 @@ it('deletes an image from storage and database', function (): void {
     $product = ProductModel::create(['type' => 'kit', 'name' => 'P', 'slug' => 'p', 'active' => true]);
     $color = ColorModel::create(['name' => 'Rosa', 'active' => true]);
 
-    Storage::disk('s3')->put('products/1/colors/1/img.jpg', 'fake content');
+    Storage::disk('images')->put('products/1/colors/1/img.jpg', 'fake content');
 
     $img = ProductColorImageModel::create([
         'product_id' => $product->id, 'color_id' => $color->id,
@@ -176,7 +176,7 @@ it('deletes an image from storage and database', function (): void {
     $response->assertStatus(200);
 
     expect(ProductColorImageModel::find($img->id))->toBeNull();
-    Storage::disk('s3')->assertMissing('products/1/colors/1/img.jpg');
+    Storage::disk('images')->assertMissing('products/1/colors/1/img.jpg');
 });
 
 it('returns 404 when deleting non-existent image', function (): void {
